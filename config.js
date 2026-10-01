@@ -1,8 +1,6 @@
-// The online frontend talks to a helper on the visitor's own computer.
-// The standalone file preview retains browser-only storage. When server.py
-// serves the frontend itself it supplies its own same-origin config.js.
+// Online use needs no server: the browser writes to a user-approved folder.
+// server.py remains an optional integration path and supplies its own config.
 export const config = Object.freeze({
-  apiBase: typeof location === 'undefined' || location.protocol === 'file:'
-    ? '' : 'http://127.0.0.1:8000',
+  apiBase: '',
   refreshMs: 60_000,
 });

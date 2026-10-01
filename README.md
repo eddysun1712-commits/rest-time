@@ -1,21 +1,23 @@
 # Rest Time
 
-Online focus workspace with a local account database. This repository root contains the deployed static frontend. GitHub Pages is published from the main branch, repository root.
+在线网站 + 本地文件夹存储，默认简体中文。无需 Terminal、Python 或本地服务。
 
-## Local account service
+## 使用
 
-Download `Rest-Time-GitHub-Pages.zip` from this repository and extract it. Open Terminal in its `rest-time` folder and run:
+1. 打开已发布的 Rest Time 网站。
+2. 在登录 / 注册页点击 **选择本地文件夹**，选择一个专用文件夹，并允许浏览器读写。
+3. 注册或登录。账户、图表、对话和设置自动保存到所选文件夹的 `rest-time-data` 子文件夹。
 
-```sh
-python3 server.py --port 8000 --origin https://eddysun1712-commits.github.io
-```
+网站记住所选文件夹。权限失效时点击 **连接此文件夹** 重新授权。使用支持文件夹读写的电脑浏览器（Chrome / Edge）；不支持时可以仅使用浏览器存储。不同文件夹和浏览器存储中的账户互相独立，不自动迁移。
 
-Keep the helper running, open the online Rest Time website, and sign up/log in. Allow local-network access if your browser prompts you. Accounts and data are stored in the local `runtime/rest-time.sqlite3` database. The online page calls `http://127.0.0.1:8000`, which means the computer opening the site. No cloud account database is used. The archive includes all server, processor, frontend source and checks.
+`accounts.json` 保存随机盐和 PBKDF2 密码哈希，不保存明文密码；每个账户有独立的数据文件。现有文件损坏时停止写入并保留原文件。关闭网页后停止写入，账户文件仍保留在磁盘上。这是本地账户系统，文件夹可被拥有磁盘访问权限的人编辑；请备份。
 
-The original frontend source in the archive uses an assets/ folder; the deployed root uses the same assets at root. No runtime databases or keys are in this repository.
+## 源码与现有部署
 
-DeepSeek, real sensor inference, password recovery, JD login and the sample-data demo remain explicit placeholders. Missing camera inference code and trained model weights are needed for live sensor scoring.
+本仓库根目录为部署版本，GitHub Pages 从 **main / (root)** 发布。下载 `Rest-Time-GitHub-Pages.zip` 可获得完整源码、离线预览、可选 Python 服务、处理器和检查。压缩包中的 `.github/workflows/pages.yml` 是完整源码另建仓库时的部署方案，不是本仓库当前的发布方式。
 
-All five screens, session timers, two percentage/time graphs, JSON import, language and sound controls, and the chat panel are included.
+DeepSeek、真实传感器推理、密码找回、JD 登录和示例数据演示尚未接入。摄像头推理代码和兼容的训练模型权重仍缺失。
 
-The RestTime logo was supplied by the user. The DeepSeek symbol comes from https://github.com/deepseek-ai/DeepSeek-LLM/blob/main/images/logo.svg.
+文件夹存储检查通过：限定子文件夹、数据持久保存、账户隔离、重复账户、权限失效、损坏文件保护及写入恢复。检查使用模拟文件句柄，实际本机授权需在浏览器中完成。
+
+RestTime 标志由用户提供，DeepSeek 图标来源于官方仓库。文件夹 API：[Chrome 官方文档](https://developer.chrome.com/docs/capabilities/web-apis/file-system-access)。
