@@ -2,18 +2,18 @@
 
 ## 使用 / Use
 
-GitHub Pages 仍提供网页。点击 **AI 连接 → 连接专注助手**，在私人的连接窗口完成登录，并保持窗口打开。不需要 Terminal。连接窗口仅接受 `https://eddysun1712-commits.github.io` 的消息，服务器使用私密环境变量调用中转服务。只有获准访问私人 Site 的用户可用这把服务密钥。
+The GitHub Pages website calls the public backend automatically when a work session starts. No ChatGPT login, popup window, API-key entry, or Terminal is required. Local Rest Time accounts and personal files remain local. The backend accepts only its fixed focus-assistant endpoint and model, validates responses, limits input to 64 KB and output to 1,800 tokens, and stores the API key as a server secret.
 
-The GitHub frontend opens an authenticated private connection window. Keep it open during the session. The server holds the relay key; the public repository contains no key. Popup blocking, closing the connection window, expired authentication, or browser isolation of the popup can interrupt the connection. Reconnect from the AI settings if needed. The relay does not permit direct browser CORS requests.
+Durable limits: 480 requests per UTC day across the service, 120 per hour and 10 per minute per network address. Counters survive restarts. Hashed network-address buckets expire automatically; chats and sensor data are not stored in the backend database. Requests rejected by the provider still consume quota. These limits cap requests, not dollars. Origin filtering only isolates browser callers; it does not authenticate non-browser clients.
 
-账户密码、密码哈希、本地文件夹句柄不发给 AI。发送的是个人偏好、本次指数（最多最近 240 个窗口及全时段统计）、最近 24 条本时段对话、最近 5 次总结。网络服务会收到这些输入；本地保存并不代表 AI 推理在本机进行。
+账户密码、密码哈希、本地文件夹句柄不发给 AI。发送个人偏好、会话指数与统计、最近对话及总结。网络服务会收到这些输入；本地保存不代表 AI 推理在本机进行。演示始终使用明确标记的本地脚本，不消耗 API 配额。
 
 ## Session lifecycle
 
 `start → message / observe → end_checkin → summary`
 
 - Start asks for goal, planned duration, energy.
-- Observe runs approximately every 60 seconds while the active page is visible and connected, with no overlapping requests. Background tabs may delay checks; this is not a closed-browser notification service.
+- Observe runs approximately every 60 seconds while the active page is visible, with no overlapping requests. Background tabs may delay checks; this is not a closed-browser notification service.
 - End immediately freezes the elapsed timer. The user can add completion/interruption/feeling notes or skip them before requesting a summary.
 - Invalid, truncated or failed output is rejected and shows a retry option. An error never manufactures an AI answer.
 - Summary and allowed personal preference updates are saved to the selected local account. No profile updates occur in demo mode.
@@ -53,4 +53,4 @@ Official references:
 
 32 synthetic paired output fixtures use the uploaded camera/wrist JSON format and the original fusion rules: 0.4/0.6 source weights multiplied by quality; three consecutive elevated windows for the persistent rest state; both invalid sources reset history. The sequence includes normal, rising, sustained high, missing and recovery windows. Each minute replays in two seconds, with pause/step controls. The JSON input is visible in Help → View & import data.
 
-Without AI connected, explicitly labeled scripts demonstrate the interaction. With AI connected, requests use demo-tagged data. Neither case overwrites personal records. The original upload lacks a complete camera inference implementation and compatible trained weights; this demo does not pretend to infer reliable probabilities from raw video/PPG.
+Without AI connected, explicitly labeled scripts demonstrate the interaction. The demo never calls the public backend or overwrites personal records. The original upload lacks a complete camera inference implementation and compatible trained weights; this demo does not pretend to infer reliable probabilities from raw video/PPG.
