@@ -1,6 +1,24 @@
 import { normalizeBatch } from './data.js';
-// Explicit synthetic output fixtures. Not camera inference or a trained wrist model.
-const DEMO_PAIRS=[[18,20],[20,21],[17,23],[22,20],[24,25],[28,29],[32,30],[36,34],[42,39],[47,45],[51,48],[48,46],[null,50],[null,53],[55,56],[60,61],[66,65],[72,71],[76,74],[79,77],[82,80],[75,null],[null,null],[58,55],[48,44],[38,35],[30,29],[27,25],[23,24],[21,20],[20,22],[19,21]];
+// Adapted simulation using approximate group F-ISA means digitized from Figure 1a.
+// Hamann & Carstengerdes (2023), doi:10.1038/s41598-023-31264-w, CC BY 4.0.
+// Original 16-block/90-minute ratings are NOT camera/wrist probabilities.
+export const DEMO_MINUTES=40;
+const STUDY_MEANS=[1.61,1.72,1.87,1.93,2.14,2.39,2.40,2.46,2.57,2.87,2.84,2.82,2.78,2.88,3.10,3.03];
+const TARGETS=[[0,14],[15,22],[25,40],[40,70]];
+const interpolate=(values,x)=>{const i=Math.min(Math.floor(x),values.length-2);return values[i]+(values[i+1]-values[i])*(x-i);};
+const raw=Array.from({length:41},(_,i)=>interpolate(STUDY_MEANS,i/40*15));
+// Small observed departures from a straight trend preserve some source variability.
+const residual=raw.map((v,i)=>v-(STUDY_MEANS[0]+(STUDY_MEANS.at(-1)-STUDY_MEANS[0])*i/40));
+const DEMO_PAIRS=Array.from({length:DEMO_MINUTES},(_,i)=>{
+ const minute=i+1;const k=minute<=15?0:minute<=25?1:2;
+ const [a,lo]=TARGETS[k],[b,hi]=TARGETS[k+1],f=(minute-a)/(b-a);
+ const target=lo+(hi-lo)*f;
+ const adjusted=target+3*(residual[minute]-residual[a]*(1-f)-residual[b]*f);
+ const smooth=(residual[Math.max(0,minute-1)]+residual[minute])/2;
+ // Both illustrative channels share a fatigue trend; their offset is designed, not measured.
+ const offset=minute===40?0:0.6+Math.min(0.6,Math.abs(smooth));
+ return [Math.round((adjusted+offset)*10)/10,Math.round((adjusted-offset)*10)/10];
+});
 export function demoWindows(base){
  return DEMO_PAIRS.map(([camera,wrist],i)=>{
   const metadata={session_id:'synthetic-demo',window_start_utc:new Date(base+i*60000).toISOString(),window_end_utc:new Date(base+(i+1)*60000).toISOString()};
