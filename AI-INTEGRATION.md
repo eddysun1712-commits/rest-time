@@ -51,6 +51,6 @@ Official references:
 
 ## Demo scope
 
-32 synthetic paired output fixtures use the uploaded camera/wrist JSON format and the original fusion rules: 0.4/0.6 source weights multiplied by quality; three consecutive elevated windows for the persistent rest state; both invalid sources reset history. The sequence includes normal, rising, sustained high, missing and recovery windows. Each minute replays in two seconds, with pause/step controls. The JSON input is visible in Help → View & import data.
+The 40-minute demo is a research-adapted simulation based on approximate group fatigue ratings from Hamann & Carstengerdes (2023), Figure 1a: https://doi.org/10.1038/s41598-023-31264-w. It deliberately remaps the original 90-minute ratings to the requested scenario: low during the first 15 minutes, about 40% at minute 25 and 70% at minute 40. Neither channel is an observed camera/wrist probability. See research/DEMO-SOURCE.md for the exact transformation and limitations.
 
-Without AI connected, explicitly labeled scripts demonstrate the interaction. The demo never calls the public backend or overwrites personal records. The original upload lacks a complete camera inference implementation and compatible trained weights; this demo does not pretend to infer reliable probabilities from raw video/PPG.
+The output uses the uploaded JSON format and quality-weighted, three-window fusion rules. One minute replays every two seconds; pause and step controls remain. At minute 40 the timer stops automatically and the assistant requests optional wrap-up comments. Help exposes the output JSON; the banner exposes the source. Scripts never call the public backend or overwrite personal records.
